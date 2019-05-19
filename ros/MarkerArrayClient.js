@@ -108,6 +108,16 @@ EASE.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
   this.emit('change');
 };
 
+EASE.MarkerArrayClient.prototype.getObjectMarker = function(objectName){
+  x = this.markers[objectName]
+  if(x) {
+      return x[0];
+  }
+  else {
+      return undefined;
+  }
+}
+
 EASE.MarkerArrayClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();

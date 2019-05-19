@@ -12,6 +12,7 @@ function KnowrobCanvas(client, options){
         height : 1080,
         antialias : true,
         background : options.background || '#ffffff',
+        useShader : false,
         camera: {
             position: {x : 3, y : 3, z : 3},
             zoomSpeed: 0.5,
@@ -32,7 +33,7 @@ function KnowrobCanvas(client, options){
             pos: [0, 0, 6],
             target: [-1, 1, 0],
             shadow: {
-                debug: true
+                debug: false
             }
         }
     });

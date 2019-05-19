@@ -54,6 +54,7 @@ function KnowrobClient(options){
     this.markerArrayClient = undefined;
     var designatorClient = undefined;
     var imageClient = undefined;
+    var highlightClient = undefined;
     var cameraPoseClient = undefined;
     this.snapshotTopic = undefined;
     
@@ -275,32 +276,29 @@ function KnowrobClient(options){
               that.getActiveFrame().on_image_received(html, imageWidth, imageHeight);
           }
       });
-      
-      // TODO redo highlighting with dedicated messages
-//       var highlightClient = new ROSLIB.Topic({
-//         ros : that.ros,
-//         name : '/ease/canvas/highlight',
-//         messageType : 'std_msgs/String'
-//       });
-//       highlightClient.subscribe(function(message) {
-//         var objectId = message.data;
-//         console.info(objectId);
-//         if(objectId == '*') {
-//         } else {
-//         }
-//       });
-//       var unhighlightClient = new ROSLIB.Topic({
-//         ros : that.ros,
-//         name : '/ease/canvas/unhighlight',
-//         messageType : 'std_msgs/String'
-//       });
-//       highlightClient.subscribe(function(message) {
-//         var objectId = message.data;
-//         console.info(objectId);
-//         if(objectId == '*') {
-//         } else {
-//         }
-//       });
+
+      highlightClient = new ROSLIB.Topic({
+        ros : that.ros,
+        name : '/openease/highlight',
+        messageType : 'knowrob_openease/Highlight'
+      });
+      highlightClient.subscribe(function(msg) {
+          console.info('highlightClient!!!!');
+          var r = msg.color.r;
+          var g = msg.color.g;
+          var b = msg.color.b;
+          var a = msg.color.a;
+          for(var i in msg.objects) {
+              var o = msg.objects[i];
+              var marker = that.markerArrayClient.getObjectMarker(o.toString());
+              if(!marker) continue;
+              if(r>0 || g>0 || b>0 || a>0) {
+                  that.canvas.viewer().highlight(marker, [r,g,b,a]);
+              } else {
+                  that.canvas.viewer().unhighlight(marker);
+              }
+          }
+      });
 
       cameraPoseClient = new ROSLIB.Topic({
         ros : that.ros,
